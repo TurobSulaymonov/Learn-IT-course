@@ -1,3 +1,4 @@
+"use client"  
  import Logo from '@/components/shared/logo'
  import ModeToggle from '@/components/shared/mode-toggle'
  import { Button } from '@/components/ui/button'
@@ -6,10 +7,14 @@
  import Link from 'next/link'
  import LanguageDropdown from '@/components/shared/language-dropdown'
  import GlobalSearch from './global-search'
+import { SignedIn, SignedOut, SignInButton,  SignUpButton, UserButton } from '@clerk/nextjs'
+import useTranslate from '@/hooks/use-translate'
+
 
 
 
 const Navbar = () => {
+    const t = useTranslate()
   return (
     <div className='fixed inset-0 z-40 h-20 bg-background/70 backdrop-blur-xl'>
     <div className='container mx-auto flex h-full max-w-7xl items-center justify-between border-b'>
@@ -22,7 +27,7 @@ const Navbar = () => {
                         key={nav.route}
                         className='font-medium transition-all hover:text-blue-500 hover:underline'
                     >
-                        {nav.name}
+                        {t(nav.name)}
                     </Link>
                 ))}
             </div> 
@@ -39,12 +44,21 @@ const Navbar = () => {
                 <ModeToggle />
             </div>
 
-            <Button variant={'ghost'} size={'lg'} rounded={'full'}>
-                Log in
-            </Button>
-            <Button size={'lg'} rounded={'full'}>
-                Sign Up
-            </Button>
+            <SignedIn>
+						<UserButton />
+					</SignedIn>
+					<SignedOut>
+						<SignInButton mode='modal'>
+							<Button variant={'ghost'} size={'lg'} rounded={'full'}>
+								Log in
+							</Button>
+						</SignInButton>
+						<SignUpButton mode='modal'>
+							<Button size={'lg'} rounded={'full'}>
+								Sign Up
+							</Button>
+						</SignUpButton>
+					</SignedOut>
         </div>
       
     </div>
