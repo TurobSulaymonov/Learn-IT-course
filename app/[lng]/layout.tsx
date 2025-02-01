@@ -8,6 +8,7 @@ import { languages } from "@/i18n/settings";
 import { dir } from "i18next";
 import {ClerkProvider} from "@clerk/nextjs"
 import { localization } from "@/lib/utils";
+import { Toaster } from '@/components/ui/sonner'
 
 const roboto = Roboto({
 	subsets: ['latin', 'cyrillic'],
@@ -28,7 +29,7 @@ export async function generateStaticParams() {
 export const metadata: Metadata = {
   title: "Startup Fullstack",
   description: "Startup Praktikum's a Next.js project",
-  icons: { icon: '/logo.svg' },
+  icons: { icon: '/logo-1.jpeg' },
 };
 
 interface Props extends ChildProps {
@@ -51,6 +52,7 @@ export default function RootLayout({children, params: {lng}}: Props) {
 					enableSystem
 					disableTransitionOnChange
 				>
+					<Toaster position='top-center' />
 					{children}
 				</ThemeProvider>
 				

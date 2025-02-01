@@ -12,22 +12,39 @@ import {
 import Image from 'next/image'
 import { lngs } from '@/constants'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { cn } from '@/lib/utils'
+import { useParams, usePathname } from 'next/navigation'
+import { cn, getCurrentLng } from '@/lib/utils'
+  
+interface Props {
+	isMobile: boolean;
+}
 
-function LanguageDropdown() {
+function LanguageDropdown ({ isMobile = false }: Props) {
     const { lng } = useParams()
+	const pathanme = usePathname()
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant='ghost' size={'icon'}>
+			<Button
+					variant='ghost'
+					size={'icon'}
+					className={cn(
+						isMobile && 'w-full bg-primary hover:bg-primary/80 h-12'
+					)}
+				>
 					<Languages />
+					{isMobile && (
+						<span className='ml-2 font-space-grotesk font-medium'>
+							{getCurrentLng(lng as string)}
+						</span>
+					)}
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className='w-56'>
 				<DropdownMenuGroup>
 					{lngs.map(item => (
-					<Link key={item.route} href={`/${item.route}`}>
+					<Link key={item.route} href={`/${item.route}/${pathanme.slice(4)}`}>
+						
                     	<DropdownMenuItem 
                             className={cn(
                                 'cursor-pointer',
