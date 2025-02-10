@@ -3,9 +3,9 @@ import Link from 'next/link'
 
 function Logo() {
 	return (
-		<Link href={'/'} className='flex items-center gap-2'>
+		<Link href={'/'} className=' flex  items-center gap-2' >
 			<Image src={'/logo-1.jpeg'} alt='logo' width={50} height={50} />
-			<h1 className='font-space-grotesk text-4xl font-bold'>Turob</h1>
+			<h1 className='font-space-grotesk text-4xl  font-bold hover:text-green-700'>Turob</h1>
 		</Link>
 	)
 }

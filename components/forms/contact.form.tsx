@@ -11,11 +11,9 @@ import { Button } from '../ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
 import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
-import useTranslate from '@/hooks/use-translate'
 
 function ContactForm() {
 	const [isLoading, setIsLoading] = useState(false)
-	const t = useTranslate()
 
 	const form = useForm<z.infer<typeof contactSchema>>({
 		resolver: zodResolver(contactSchema),
@@ -29,7 +27,7 @@ function ContactForm() {
 	function onSubmit(values: z.infer<typeof contactSchema>) {
 		setIsLoading(true)
 		const telegramBotId = process.env.NEXT_PUBLIC_TETELGRAM_BOT_API!
-		const telegramChatId = process.env.NEXT_PUBLIC_TETELGRAM_CHAT_ID!
+		const telegramChatId = process.env.NEXT_PUBLIC_TELEGRAMM_CHAT_ID!
 
 		const promise = fetch(
 			`https://api.telegram.org/bot${telegramBotId}/sendMessage`,
@@ -51,9 +49,9 @@ Message: ${values.message}`,
 			.finally(() => setIsLoading(false))
 
 		toast.promise(promise, {
-			loading: t('loading'),
-			success: t('successfully'),
-			error: t('error'),
+			loading: 'Loading...',
+			success: 'Successfully sent!',
+			error: 'Something went wrong!',
 		})
 	}
 
@@ -69,7 +67,7 @@ Message: ${values.message}`,
 								<Textarea
 									disabled={isLoading}
 									className='h-32 resize-none'
-									placeholder={t('contactFormTextarea')}
+									placeholder='Ask question or just say Hi'
 									{...field}
 								/>
 							</FormControl>
@@ -84,7 +82,7 @@ Message: ${values.message}`,
 						<FormItem>
 							<FormControl>
 								<Input
-									placeholder={t('contactFormEmail')}
+									placeholder='Email address'
 									disabled={isLoading}
 									{...field}
 								/>
@@ -100,7 +98,7 @@ Message: ${values.message}`,
 						<FormItem>
 							<FormControl>
 								<Input
-									placeholder={t('contactFormName')}
+									placeholder='Your name here'
 									disabled={isLoading}
 									{...field}
 								/>
@@ -114,9 +112,8 @@ Message: ${values.message}`,
 					size={'lg'}
 					type='submit'
 					disabled={isLoading}
-					rounded={'full'}
 				>
-					<span>{t('send')}</span>
+					<span>Send</span>
 					<Send className='ml-2 size-4' />
 				</Button>
 			</form>
