@@ -1,4 +1,4 @@
-import ReactStars from 'react-stars'
+
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 function ReviewCard() {
@@ -17,7 +17,7 @@ function ReviewCard() {
 				<div className='flex flex-col'>
 					<div>John Doe</div>
 					<div className='flex items-center gap-1'>
-						<ReactStars value={4.5} edit={false} color2='#DD6B20' />
+					
 						<p className='text-sm opacity-50'>5 minut oldin</p>
 					</div>
 				</div>

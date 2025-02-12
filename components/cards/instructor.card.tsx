@@ -1,24 +1,27 @@
 
-import { IInstructor } from '@/types'
+import { ICourse } from '@/types'
 import Image from 'next/image'
+import { Badge } from '../ui/badge'
 
-function InstructorCard(instructor: IInstructor) {
+function InstructorCourseCard(course: ICourse) {
 	return (
-		<div className='flex flex-col space-y-1'>
-			<div className='relative h-72 w-full'>
+		<div className='flex flex-col space-y-2 rounded-md bg-background p-2'>
+			<div className='relative h-40 w-full'>
 				<Image
-					src={instructor.image}
-					alt={instructor.name}
+					src={course.previewImage}
+					alt={course.title}
 					fill
 					className='rounded-md object-cover'
 				/>
 			</div>
-			<h1 className='font-space-grotesk text-2xl font-bold'>
-				{instructor.name}
-			</h1>
-			<h3 className='font-medium text-muted-foreground'>{instructor.job}</h3>
+			<div className='flex items-center justify-between px-2'>
+				<h1 className='font-space-grotesk text-2xl font-bold'>
+					{course.title}
+				</h1>
+				<Badge>Publish</Badge>
+			</div>
 		</div>
 	)
 }
 
-export default InstructorCard
+export default InstructorCourseCard
