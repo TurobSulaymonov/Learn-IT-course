@@ -24,18 +24,81 @@ import {
 } from '../ui/select'
 import { courseCategory, courseLanguage, courseLevels } from '@/constants'
 import { Button } from '../ui/button'
+import { createCourse } from '@/actions/course.action'
+import { toast } from 'sonner'
+import { ChangeEvent, useState } from 'react'
+import { getDownloadURL, uploadString } from 'firebase/storage'
+import { courseStorageRefs } from '@/lib/firebase'
+import { ImageDown } from 'lucide-react'
+import { Dialog, DialogContent } from '../ui/dialog'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 function CourseFieldsForm() {
+	const [isLoading, setIsLoading] = useState(false)
+	const [previewImage, setPreviewImage] = useState('')
+	const [open, setOpen] = useState(false)
+
+    const router = useRouter()
+
 	const form = useForm<z.infer<typeof courseSchema>>({
 		resolver: zodResolver(courseSchema),
 		defaultValues: defaultVal,
 	})
+     
+	function onUpload(e: ChangeEvent<HTMLInputElement>) {
+		const files = e.target.files
+		if (!files) return null
+		const file = files[0]
+
+		const reader = new FileReader()
+
+		reader.readAsDataURL(file)
+		reader.onload = e => {
+			const result = e.target?.result as string
+			const promise = uploadString(courseStorageRefs, result, 'data_url').then(
+				() => {
+					getDownloadURL(courseStorageRefs).then(url => setPreviewImage(url))
+				}
+			)
+
+			toast.promise(promise, {
+				loading: 'Uploading...',
+				success: 'Successfully uploaded!',
+				error: 'Something went wrong!',
+			})
+		}
+	}
 
 	function onSubmit(values: z.infer<typeof courseSchema>) {
-		console.log(values)
+		if (!previewImage) {
+			return toast.error('Please upload a preview image')
+		}
+	     setIsLoading(true)
+		const {oldPrice, currentPrice} = values
+		const promise = createCourse({
+			...values,
+			oldPrice: +oldPrice,
+			currentPrice: +currentPrice,
+			previewImage,
+		})
+		.then(() => { 
+			   form.reset()
+			   router.push('/en/instructor/my-courses')
+		
+		}
+	)
+		.finally(() => setIsLoading(false))
+		toast.promise(promise, {
+			loading: 'Loading...',
+			success: 'Successfully created!',
+			error: 'Something went wrong!',
+		})
+
 	}
 
 	return (
+		<>
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
 				<FormField
@@ -51,6 +114,7 @@ function CourseFieldsForm() {
 									{...field}
 									className='bg-secondary'
 									placeholder='Learn ReactJS - from 0 to hero'
+									disabled={isLoading}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -71,6 +135,7 @@ function CourseFieldsForm() {
 									{...field}
 									className='h-44 bg-secondary'
 									placeholder='Description'
+									disabled={isLoading}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -81,7 +146,7 @@ function CourseFieldsForm() {
 				<div className='grid grid-cols-2 gap-4'>
 					<FormField
 						control={form.control}
-						name='studentWillLearn'
+						name='learning'
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>
@@ -89,7 +154,11 @@ function CourseFieldsForm() {
 									<span className='text-red-500'>*</span>
 								</FormLabel>
 								<FormControl>
-									<Textarea {...field} className='bg-secondary' />
+									<Textarea
+									    {...field} 
+										className='bg-secondary' 
+										disabled={isLoading}
+										/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -105,7 +174,10 @@ function CourseFieldsForm() {
 									<span className='text-red-500'>*</span>
 								</FormLabel>
 								<FormControl>
-									<Textarea {...field} className='bg-secondary' />
+									<Textarea {...field}
+									     className='bg-secondary' 
+										 disabled={isLoading}
+										 />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -155,6 +227,7 @@ function CourseFieldsForm() {
 									<Select
 										defaultValue={field.value}
 										onValueChange={field.onChange}
+										disabled={isLoading}
 									>
 										<SelectTrigger className='w-full bg-secondary'>
 											<SelectValue placeholder={'Select'} />
@@ -184,6 +257,7 @@ function CourseFieldsForm() {
 									<Select
 										defaultValue={field.value}
 										onValueChange={field.onChange}
+										disabled={isLoading}
 									>
 										<SelectTrigger className='w-full bg-secondary'>
 											<SelectValue placeholder={'Select'} />
@@ -201,10 +275,7 @@ function CourseFieldsForm() {
 							</FormItem>
 						)}
 					/>
-				</div>
-
-				<div className='grid grid-cols-2 gap-4'>
-					<FormField
+						<FormField
 						control={form.control}
 						name='oldPrice'
 						render={({ field }) => (
@@ -213,7 +284,11 @@ function CourseFieldsForm() {
 									Old price<span className='text-red-500'>*</span>
 								</FormLabel>
 								<FormControl>
-									<Input {...field} className='bg-secondary' type='number' />
+									<Input {...field}  
+									    className='bg-secondary' 
+										type='number' 
+										disabled={isLoading}
+										/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -228,13 +303,34 @@ function CourseFieldsForm() {
 									Current Price<span className='text-red-500'>*</span>
 								</FormLabel>
 								<FormControl>
-									<Input {...field} className='bg-secondary' type='number' />
+									<Input {...field} 
+									   className='bg-secondary' 
+									   type='number'
+									   disabled={isLoading}
+									   
+									   />
+										
+
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
+                     <FormItem>
+							<FormLabel>
+								Preview image<span className='text-red-500'>*</span>
+							</FormLabel>
+							<Input
+								className='bg-secondary'
+								type='file'
+								disabled={isLoading}
+								onChange={onUpload}
+							/>
+						</FormItem>
+
 				</div>
+
+			
 
 				<div className='flex justify-end gap-4'>
 					<Button
@@ -242,15 +338,52 @@ function CourseFieldsForm() {
 						size={'lg'}
 						variant={'destructive'}
 						onClick={() => form.reset()}
+						disabled={isLoading}
+
 					>
 						Clear
 					</Button>
 					<Button type='submit' size={'lg'}>
 						Submit
 					</Button>
+					{previewImage && (
+							<Button
+								type='button'
+								size={'lg'}
+								variant={'outline'}
+								onClick={() => setOpen(true)}
+							>
+								<span>Image</span>
+								<ImageDown className='ml-2 size-4' />
+							</Button>
+						)}
 				</div>
 			</form>
 		</Form>
+
+		<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent>
+					<div className='relative h-72'>
+						<Image
+							src={previewImage}
+							alt='preview-image'
+							fill
+							className='object-cover'
+						/>
+					</div>
+					<Button
+						className='w-fit'
+						variant={'destructive'}
+						onClick={() => {
+							setPreviewImage('')
+							setOpen(false)
+						}}
+					>
+						Remove
+					</Button>
+				</DialogContent>
+			</Dialog>
+		</>
 	)
 }
 
@@ -259,7 +392,7 @@ export default CourseFieldsForm
 const defaultVal = {
 	title: '',
 	description: '',
-	studentWillLearn: '',
+	learning: '',
 	requirements: '',
 	level: '',
 	category: '',
