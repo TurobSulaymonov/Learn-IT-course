@@ -17,9 +17,7 @@ import Link from 'next/link'
 import GlobalSearch from './global-search'
 import ModeToggle from '@/components/shared/mode-toggle'
 
-interface Props {
-    isMobile: boolean
-}
+
 
 function Mobile( ) {
 	const t = useTranslate()
