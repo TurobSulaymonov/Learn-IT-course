@@ -46,7 +46,7 @@ function Navbar() {
 					<div className='flex items-center gap-2 md:border-r md:pr-3'>
 						<div className='hidden md:flex'>
 							<GlobalSearch />
-							<LanguageDropdown />
+							<LanguageDropdown isMobile={false} />
 							<Button size={'icon'} variant={'ghost'}>
 								<ShoppingCart />
 							</Button>

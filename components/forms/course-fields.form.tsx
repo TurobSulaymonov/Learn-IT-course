@@ -33,6 +33,7 @@ import { ImageDown } from 'lucide-react'
 import { Dialog, DialogContent } from '../ui/dialog'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useUser } from '@clerk/nextjs'
 
 function CourseFieldsForm() {
 	const [isLoading, setIsLoading] = useState(false)
@@ -40,6 +41,7 @@ function CourseFieldsForm() {
 	const [open, setOpen] = useState(false)
 
     const router = useRouter()
+	const { user } = useUser()
 
 	const form = useForm<z.infer<typeof courseSchema>>({
 		resolver: zodResolver(courseSchema),
@@ -81,7 +83,9 @@ function CourseFieldsForm() {
 			oldPrice: +oldPrice,
 			currentPrice: +currentPrice,
 			previewImage,
-		})
+		},
+		user?.id as string
+)
 		.then(() => { 
 			   form.reset()
 			   router.push('/en/instructor/my-courses')

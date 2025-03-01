@@ -1,10 +1,12 @@
-import InstructorCourseCard from '@/components/cards/instructor.card'
 import Header from '../_components/header'
 
 import { getCourses } from '@/actions/course.action'
+import InstructorCourseCard from '@/components/cards/instructor-course.card'
+import { auth } from '@clerk/nextjs'
 
 async function Page() {
-	const courses = await getCourses()
+	const { userId } = auth()
+	const courses = await getCourses(userId as string)
 
 	return (
 		<>
