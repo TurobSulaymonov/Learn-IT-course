@@ -339,7 +339,7 @@ function CourseFieldsForm() {
 				<div className='flex justify-end gap-4'>
 					<Button
 						type='button'
-						size={'lg'}
+						
 						variant={'destructive'}
 						onClick={() => form.reset()}
 						disabled={isLoading}
@@ -353,7 +353,7 @@ function CourseFieldsForm() {
 					{previewImage && (
 							<Button
 								type='button'
-								size={'lg'}
+								
 								variant={'outline'}
 								onClick={() => setOpen(true)}
 							>

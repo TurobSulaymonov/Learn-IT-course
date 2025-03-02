@@ -12,9 +12,11 @@ export const createCourse = async (data: ICreateCourse, clerkId: string) => {
 		await connectToDatabase()
 		const user = await User.findOne({ clerkId })
 		await Course.create({ ...data, instructor: user._id })
-		revalidatePath('/en/instructor/my-courses')
+		// revalidatePath('/en/instructor/my-courses')
+		console.log("user", user)
 	} catch (error) {
-		throw new Error('Soething went wrong while creating course!')
+		     console.error("Kurs yaratishda xatolik:", error);
+			throw new Error( 'Something went wrong while creating course!')
 	}
 }
 

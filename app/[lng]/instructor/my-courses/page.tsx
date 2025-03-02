@@ -8,6 +8,8 @@ async function Page() {
 	const { userId } = auth()
 	const courses = await getCourses(userId as string)
 
+	console.log("courses", courses)
+
 	return (
 		<>
 			<Header title='My courses' description='Here are your latest courses' />
