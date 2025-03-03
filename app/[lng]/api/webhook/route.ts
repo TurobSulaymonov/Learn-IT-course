@@ -1,11 +1,11 @@
 
 /* eslint-disable camelcase */
-
 import { createUser, updateUser } from '@/actions/user.action'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { Webhook } from 'svix'
+
 
 export async function POST(req: Request) {
 	const WEBHOOK_SECRET = process.env.NEXT_CLERK_WEBHOOK_SECRET
@@ -66,12 +66,14 @@ export async function POST(req: Request) {
 		const { id, email_addresses, image_url, first_name, last_name } = evt.data
 
 		const user = await updateUser({
+			path: "/user/update",
 			clerkId: id,
 			updatedData: {
 				email: email_addresses[0].email_address,
 				fullName: `${first_name} ${last_name}`,
 				picture: image_url,
 			},
+			
 		})
 
 		return NextResponse.json({ message: 'OK', user })
