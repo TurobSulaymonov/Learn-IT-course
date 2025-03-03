@@ -11,4 +11,11 @@ export interface ICourse {
 	currentPrice: number;
 	previewImage: string;
 	published: boolean;
+	slug: string;
+	tags: string;
+}
+export interface ISection {
+	title: string
+	_id: string
+	position: number
 }
